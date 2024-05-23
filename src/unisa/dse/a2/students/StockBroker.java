@@ -12,7 +12,7 @@ public class StockBroker {
 	/**
 	 * List of stocks this stock broker is "watching"
 	 */
-	private DSEListGeneric<String> watchList = new DSEListGeneric<String>();
+	private DSEListGeneric<String> watchList = new DSEListGeneric<>();
 
 	/**
 	 * returns a DEEP copy of the watchlist. Changes to the list returned from here
@@ -20,7 +20,7 @@ public class StockBroker {
 	 * @return
 	 */
 	public DSEListGeneric<String> getWatchlist() {
-		return new DSEListGeneric<String>(watchList);
+		return new DSEListGeneric<>(watchList);
 	}
 	
 	/**
@@ -30,6 +30,11 @@ public class StockBroker {
 	 */
 	public boolean addWatchlist(String companyCode)
 	{
+		if (companyCode == null || watchList.contains(companyCode)) {
+			return false;
+		}
+		watchList.add(companyCode);
+		return true;
 	}
 	
 	private String name;
@@ -39,6 +44,7 @@ public class StockBroker {
 	 * @return
 	 */
 	public String getName() {
+		return name;
 	}
 	
 	/**
@@ -47,6 +53,7 @@ public class StockBroker {
 	 */
 	public StockBroker(String name)
 	{
+		this.name = name;
 	}
 	
 	/**
@@ -56,6 +63,10 @@ public class StockBroker {
 	 */
 	public boolean placeOrder(Trade order)
 	{
+		if (order == null || pendingTrades.contains(order)) {
+			return false;
+		}
+		return pendingTrades.add(order);
 	}
 	
 	/**
@@ -64,6 +75,7 @@ public class StockBroker {
 	 */
 	public Trade getNextTrade()
 	{
+		return pendingTrades.poll();
 	}
 	
 	/**
@@ -71,6 +83,7 @@ public class StockBroker {
 	 */
 	public int getPendingTradeCount()
 	{
+		return pendingTrades.size();
 	}
 
 	/**
