@@ -6,23 +6,68 @@ import unisa.dse.a2.interfaces.ListGeneric;
  * @author simont
  *
  */
-public class DSEListGeneric implements ListGeneric {
+public class DSEListGeneric<T> implements ListGeneric<T> {
 	
-	public NodeGeneric head;
-	private NodeGeneric tail;
-
+	public NodeGeneric<T> head;
+	private NodeGeneric<T> tail;
+	
+	// Blank constructor
 	public DSEListGeneric() {
+		head = null;
+		tail = null;
 		
 	}
-	public DSEListGeneric(NodeGeneric head_) {
+	
+	// Constructor accepting one Node
+	public DSEListGeneric(NodeGeneric<T> head_) {
+		this.head = head;
+		this.tail = head;
 	}
 	
 	//Takes a list then adds each element into a new list
-	public DSEListGeneric(DSEList other) { // Copy constructor. 
+	public DSEListGeneric(DSEListGeneric<T> other) { // Copy constructor. 
+		this();
+        if (other.head != null) {
+            NodeGeneric<T> current = other.head;
+            while (current != null) {
+                add(current.get());
+                current = current.next;
+            }
+        }
 	}
 
 	//remove and return the item at the parameter's index
-	public void remove(int index) {
+	public T remove(int index) {
+		if (index < 0 || index >= size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        NodeGeneric<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+
+        T toReturn = current.get();
+
+        if (current == head) {
+            head = head.next;
+            if (head != null) {
+                head.prev = null;
+            } else {
+                tail = null; // The list is now empty
+            }
+        } else if (current == tail) {
+            tail = tail.prev;
+            if (tail != null) {
+                tail.next = null;
+            } else {
+                head = null; // The list is now empty
+            }
+        } else {
+            current.prev.next = current.next;
+            current.next.prev = current.prev;
+        }
+
+        return toReturn;
 
 	}
 
