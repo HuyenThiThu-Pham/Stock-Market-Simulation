@@ -38,7 +38,7 @@ public class DSEList implements List {
 	//remove the String at the parameter's index
 	public String remove(int index) {
 		if (index < 0 || index >= size()) {
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException(index);
 		}
 		Node current = head;
 		for (int i = 0; i < index; i++) {
@@ -87,7 +87,7 @@ public class DSEList implements List {
 	//returns String at parameter's index
 	public String get(int index) {
 		if (index < 0 || index >= size()) { // Check for out of bounds
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException(index);
 		}
 		Node current = head;
 		for (int i = 0; i < index; i++) {
@@ -114,7 +114,7 @@ public class DSEList implements List {
 	        return size;
 	    }
 	
-	//Take each element of the list a writes them to a string 
+	//Take each element of the list and writes them to a string 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -153,7 +153,7 @@ public class DSEList implements List {
 			throw new NullPointerException();
 		}
 		if (index < 0 || index > size()) { // Check for out of bounds.
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException(index);
 		}
 		// Create a new node.
 		Node newNode = new Node(null,null,obj);
@@ -194,7 +194,7 @@ public class DSEList implements List {
 	    }
 		Node current = head; // Start at the head of the list.
 		while (current != null) { // While there are nodes to check...
-			if (obj.equals(current.getString())) { // Use obj.equals to avoid potential NullPointerException
+			if (obj.equals(current.getString())) { 
 	            return true;
 	        }
 	        current = current.next;
