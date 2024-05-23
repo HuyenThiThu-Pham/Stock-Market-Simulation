@@ -6,7 +6,7 @@ import unisa.dse.a2.interfaces.ListGeneric;
  * @author simont
  *
  */
-public class DSEListGeneric<T> implements ListGeneric<T> {
+public abstract class DSEListGeneric<T> implements ListGeneric<T> {
 	
 	public NodeGeneric<T> head;
 	private NodeGeneric<T> tail;
@@ -72,19 +72,47 @@ public class DSEListGeneric<T> implements ListGeneric<T> {
 	}
 
 	//returns the index of the String parameter 
-	public int indexOf(String obj) {
+	public int indexOf(T obj) {
+		NodeGeneric<T> current = head;
+        int index = 0;
+        while (current != null) {
+            if (current.get().equals(obj)) {
+                return index;
+            }
+            current = current.next;
+            index++;
+        }
+        return -1;
 	}
 	
 	//returns item at parameter's index
-	public void get(int index) {
+	public T get(int index) {
+		if (index < 0 || index >= size()) { // Check for out of bounds
+            throw new IndexOutOfBoundsException();
+        }
+        NodeGeneric<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        return current.get();
 	}
 
 	//checks if there is a list
+	@Override
 	public boolean isEmpty() {
+		return head == null;
 	}
 
 	//return the size of the list
+	@Override
 	public int size() {
+		int size = 0;
+		NodeGeneric<T> current = head;
+		while (current != null) {
+			size++;
+            current = current.next;
+		}
+		return size;
 	}
 	
 	//Take each element of the list a writes them to a string 

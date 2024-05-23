@@ -8,13 +8,13 @@ import unisa.dse.a2.interfaces.List;
  */
 public class DSEList implements List {
 	
-	private Node head;
+	public Node head;
 	private Node tail;
 
 	//Blank constructor
 	public DSEList() {
-		head = null;
-		tail = null;
+		this.head = null;
+		this.tail = null;
 	}
 	
 	//Constructor accepting one Node
@@ -158,10 +158,14 @@ public class DSEList implements List {
 		// Create a new node.
 		Node newNode = new Node(null,null,obj);
 		if (index == 0) { // Add to the front.
+			// Make next of new node as head and previous as NULL
 			newNode.next = head;
+			newNode.prev = null;
+			//change previous of head node to new node
 		    if (head != null) {
 		        head.prev = newNode;
 		    }
+		    //move the head to point to the new node.
 		    head = newNode;
 		    if (tail == null) { // If the list was empty, set tail to the new node
 		        tail = newNode;
@@ -199,7 +203,7 @@ public class DSEList implements List {
 	    return false;
 	}
 
-	//removes the parameter's String form the list
+	//removes the parameter's String from the list
 	public boolean remove(String obj) {
 		if (obj == null) { // Check for null
 	        throw new NullPointerException();
@@ -208,14 +212,14 @@ public class DSEList implements List {
 		Node current = head; // Start at the head of the list.
 		while (current != null) { // While there are nodes to check...
 			if (current.getString().equals(obj)) {
-	            if (current == head) {
+	            if (current == head) { // removing head
 	                head = head.next;
 	                if (head != null) {
 	                    head.prev = null;
 	                } else {
 	                    tail = null; // The list is now empty
 	                }
-	            } else if (current == tail) {
+	            } else if (current == tail) { //removing tail
 	                tail = tail.prev;
 	                if (tail != null) {
 	                    tail.next = null;
