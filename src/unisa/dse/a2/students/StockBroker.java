@@ -15,7 +15,7 @@ public class StockBroker {
 	private DSEListGeneric<String> watchList = new DSEListGeneric<>();
 
 	/**
-	 * returns a DEEP copy of the watchlist. Changes to the list returned from here
+	 * returns a DEEP copy of the watchList. Changes to the list returned from here
 	 * should NOT change the list stored by this broker
 	 * @return
 	 */
@@ -24,7 +24,7 @@ public class StockBroker {
 	}
 	
 	/**
-	 * Adds the company code to the watchlist if it's not null and not already in there
+	 * Adds the company code to the watchList if it's not null and not already in there
 	 * @param companyCode
 	 * @return true if added
 	 */

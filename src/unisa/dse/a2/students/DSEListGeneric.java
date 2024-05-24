@@ -6,15 +6,15 @@ import unisa.dse.a2.interfaces.ListGeneric;
  * @author simont
  *
  */
-public abstract class DSEListGeneric<T> implements ListGeneric<T> {
+public class DSEListGeneric<T> implements ListGeneric<T> {
 	
-	public NodeGeneric<T> head;
+	private NodeGeneric<T> head;
 	private NodeGeneric<T> tail;
 	
 	// Blank constructor
 	public DSEListGeneric() {
-		head = null;
-		tail = null;
+		this.head = null;
+		this.tail = null;
 		
 	}
 	
@@ -71,7 +71,7 @@ public abstract class DSEListGeneric<T> implements ListGeneric<T> {
 
 	}
 
-	//returns the index of the String parameter 
+	//returns the index of the parameter 
 	public int indexOf(T obj) {
 		NodeGeneric<T> current = head;
         int index = 0;
@@ -184,7 +184,7 @@ public abstract class DSEListGeneric<T> implements ListGeneric<T> {
         return true;
 	}
 
-	//searches list for parameter's String return true if found
+	//searches list for parameter's item and return true if found
 	public boolean contains(T obj) {
 		if (obj == null) { // Check for null to avoid NullPointerException
             throw new NullPointerException("The search object cannot be null");
