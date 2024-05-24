@@ -11,8 +11,12 @@ public class SecuritiesExchange {
 	 * Exchange name
 	 */
 	private String name;
+	/**
+	 * @return The name of the exchange.
+	 */
 	
 	public String getName() {
+		return name;
 	}
 	
 	/**
@@ -36,6 +40,10 @@ public class SecuritiesExchange {
 	 */
 	public SecuritiesExchange(String name)
 	{
+		this.name = name;
+	    this.brokers = new DSEListGeneric<>();
+	    this.announcements = new DSEListGeneric<>();
+	    this.companies = new HashMap<>();
 	}
 	
 	/**
