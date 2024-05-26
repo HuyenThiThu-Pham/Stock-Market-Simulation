@@ -87,13 +87,15 @@ public class DSEList implements List {
 	//returns String at parameter's index
 	public String get(int index) {
 		if (index < 0 || index >= size()) { // Check for out of bounds
-			throw new IndexOutOfBoundsException(index);
+			return null;
 		}
+		// Start traversing the list from the head node
 		Node current = head;
+		// Traverse the list until reaching the node at the parameter's index
 		for (int i = 0; i < index; i++) {
 			current = current.next;
 		}
-		return current.getString();
+		return current.getString(); //return the String value of the node at the index
 	}
 
 	//checks if there is a list
