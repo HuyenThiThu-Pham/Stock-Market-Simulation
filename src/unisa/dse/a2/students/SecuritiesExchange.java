@@ -146,27 +146,49 @@ public class SecuritiesExchange {
 	public int runCommandLineExchange(Scanner sc)
 	{
 		while (true) {
-            System.out.println("Enter a command (addCompany, addBroker, processTrade, exit):");
-            String command = sc.nextLine();
+            System.out.println("Enter a command (addCompany, addBroker, addTrade, processTrade, exit):");
+            String command = sc.nextLine().trim().toLowerCase();
 
-            switch (command.toLowerCase()) {
+            switch (command) {
                 case "addcompany":
                     System.out.println("Enter company code:");
-                    String companyCode = sc.nextLine();
+                    String companyCode = sc.nextLine().trim();
                     System.out.println("Enter company name:");
-                    String companyName = sc.nextLine();
+                    String companyName = sc.nextLine().trim();
                     System.out.println("Enter company initial price:");
-                    int initialPrice = Integer.parseInt(sc.nextLine());
+                    int initialPrice = Integer.parseInt(sc.nextLine().trim());
                     ListedCompany company = new ListedCompany(companyCode, companyName, initialPrice);
-                    addCompany(company);
-                    System.out.println("Company added: " + companyName);
+                    if (addCompany(company)) {
+                        System.out.println("Company added: " + companyName);
+                    } else {
+                        System.out.println("Failed to add company: " + companyName);
+                    }
                     break;
                 case "addbroker":
                     System.out.println("Enter broker name:");
-                    String brokerName = sc.nextLine();
+                    String brokerName = sc.nextLine().trim();
                     StockBroker broker = new StockBroker(brokerName);
-                    addBroker(broker);
-                    System.out.println("Broker added: " + brokerName);
+                    if (addBroker(broker)) {
+                        System.out.println("Broker added: " + brokerName);
+                    } else {
+                        System.out.println("Failed to add broker: " + brokerName);
+                    }
+                    break;
+                case "addtrade":
+                    System.out.println("Enter broker name:");
+                    brokerName = sc.nextLine().trim();
+                    System.out.println("Enter company code:");
+                    companyCode = sc.nextLine().trim();
+                    System.out.println("Enter quantity:");
+                    int quantity = Integer.parseInt(sc.nextLine().trim());
+                    StockBroker brokerToTrade = findBroker(brokerName);
+                    if (brokerToTrade != null) {
+                        Trade trade = new Trade(brokerToTrade, companyCode, quantity);
+                        brokerToTrade.addTrade(trade);
+                        System.out.println("Trade added for broker: " + brokerName);
+                    } else {
+                        System.out.println("Broker not found: " + brokerName);
+                    }
                     break;
                 case "processtrade":
                     try {
@@ -184,6 +206,20 @@ public class SecuritiesExchange {
                     break;
             }
         }
-		
+    }
+
+    /**
+     * Finds a broker by name.
+     * 
+     * @param name The name of the broker to find.
+     * @return The broker if found, otherwise null.
+     */
+    private StockBroker findBroker(String name) {
+        for (StockBroker broker : brokers) {
+            if (broker.getName().equalsIgnoreCase(name)) {
+                return broker;
+            }
+        }
+        return null;
 	}
 }

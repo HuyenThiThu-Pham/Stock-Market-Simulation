@@ -112,12 +112,6 @@ public class DSEListGeneric<T> implements ListGeneric<T> {
 	//return the size of the list
 	@Override
 	public int size() {
-//		int size = 0;
-//		NodeGeneric<T> current = head;
-//		while (current != null) {
-//			size++;
-//            current = current.next;
-//		}
 		return size; //return the size variable directly
 	}
 	
@@ -289,7 +283,7 @@ public class DSEListGeneric<T> implements ListGeneric<T> {
 	}
 	
 	// Implement iterator to provide iteration capability over the list
-    @Override
+	@Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private NodeGeneric<T> current = head; // Start with the head of the list
@@ -303,10 +297,13 @@ public class DSEListGeneric<T> implements ListGeneric<T> {
             // Return the next element in the list and move the pointer forward
             @Override
             public T next() {
+            	if (!hasNext()) {
+                    throw new java.util.NoSuchElementException();
+                }
                 T data = current.get();
                 current = current.next;
                 return data;
             }
-        }
+        };
     }
 }
