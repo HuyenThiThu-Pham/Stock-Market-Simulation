@@ -49,18 +49,29 @@ public class SecuritiesExchange {
 	/**
 	 * Adds the given company to the list of listed companies on the exchange
 	 * @param company
-	 * @return true if the company was added, false if it was not
+	 * @return True if the company was successfully added, false otherwise
 	 */
 	public boolean addCompany(ListedCompany company)
 	{
+		if (company != null && !companies.containsKey(company.getCode())) {
+	        companies.put(company.getCode(), company);
+	        return true;
+	    }
+	    return false;
 	}
 
 	/**
 	 * Adds the given broke to the list of brokers on the exchange
 	 * @param company
+	 * @return True if the broker was successfully added, false otherwise
+     */
 	 */
 	public boolean addBroker(StockBroker broker)
 	{
+		if (broker != null) {
+	        return brokers.add(broker);
+	    }
+	    return false;
 	}
 	
 	/**
@@ -79,12 +90,100 @@ public class SecuritiesExchange {
 	 * @return The number of successful trades completed across all brokers
 	 * @throws UntradedCompanyException when traded company is not listed on this exchange
 	 */
-	public int processTradeRound()
+	public int processTradeRound() throws UntradedCompanyException
 	{
+		// Initialize the count of successful trades
+	    int successfulTrades = 0;
+
+	    // Loop through each broker in the list of brokers
+	    for (StockBroker broker : brokers) {
+	        // Get the next trade from the broker's queue
+	        Trade trade = broker.getNextTrade();
+
+	        // If there is a trade to process
+	        if (trade != null) {
+	            // Get the company code associated with the trade
+	            String companyCode = trade.listedCompanyCode;
+
+	            // Check if the company code exists in the companies map
+	            if (!companies.containsKey(companyCode)) {
+	                // If the company is not listed, throw an exception
+	                throw new UntradedCompanyException(companyCode);
+	            }
+
+	            // Get the ListedCompany object from the map
+	            ListedCompany company = companies.get(companyCode);
+
+	            // Get the quantity of shares to be traded
+	            int quantity = trade.getShareQuantity();
+
+	            // Get the current price of the company's shares
+	            int currentPrice = company.getCurrentPrice();
+
+	            // Calculate the total price for the quantity of shares
+	            int totalPrice = quantity * currentPrice;
+
+	            // Create the announcement string for the trade
+	            String announcement = "Trade: " + quantity + " " + companyCode + " @ " + currentPrice + " via " + broker.getName();
+
+	            // Add the announcement to the announcements list
+	            announcements.add(announcement);
+
+	            // Increment the count of successful trades
+	            successfulTrades++;
+	        }
+	    }
+	    // Return the total number of successful trades
+	    return successfulTrades;
 	}
 	
+	/**
+     * Runs the command-line interface for the exchange.
+     * 
+     * @param sc Scanner object for reading input
+     * @return The number of successful trades processed
+     */
 	public int runCommandLineExchange(Scanner sc)
 	{
+		while (true) {
+            System.out.println("Enter a command (addCompany, addBroker, processTrade, exit):");
+            String command = sc.nextLine();
+
+            switch (command.toLowerCase()) {
+                case "addcompany":
+                    System.out.println("Enter company code:");
+                    String companyCode = sc.nextLine();
+                    System.out.println("Enter company name:");
+                    String companyName = sc.nextLine();
+                    System.out.println("Enter company initial price:");
+                    int initialPrice = Integer.parseInt(sc.nextLine());
+                    ListedCompany company = new ListedCompany(companyCode, companyName, initialPrice);
+                    addCompany(company);
+                    System.out.println("Company added: " + companyName);
+                    break;
+                case "addbroker":
+                    System.out.println("Enter broker name:");
+                    String brokerName = sc.nextLine();
+                    StockBroker broker = new StockBroker(brokerName);
+                    addBroker(broker);
+                    System.out.println("Broker added: " + brokerName);
+                    break;
+                case "processtrade":
+                    try {
+                        int tradesProcessed = processTradeRound();
+                        System.out.println("Processed " + tradesProcessed + " trades.");
+                    } catch (UntradedCompanyException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    break;
+                case "exit":
+                    System.out.println("Exiting...");
+                    return 0;
+                default:
+                    System.out.println("Invalid command. Try again.");
+                    break;
+            }
+        }
 		
 	}
 }
