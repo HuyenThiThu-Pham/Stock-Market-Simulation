@@ -161,22 +161,22 @@ public class ListGenericTest extends DSUnitTesting {
 	@Test
 	public void testAddIntTrade() {
 		Marks.getInstance().marks.put(ID+"AddIntTrade", 1f);
-		ListGeneric<Trade> list = new DSEListGeneric<Trade>();
+		ListGeneric<Trade> list = new DSEListGeneric<Trade>(); //creating a empty list
 
-		list.add(new Trade(null, 1));
-		list.add(0, new Trade(null, 0));
+		list.add(new Trade(null, 1)); //add a 'Trade' at the end of the list
+		list.add(0, new Trade(null, 0)); // insert a 'Trade' at index 0
 
 		Trade n = list.get(0);
-		assertEquals("List.add(int, T) should insert the specified T at the specified index.", new Trade(null, 0), n);
+		assertEquals("List.add(int, T) should insert the specified T at the specified index.", new Trade(null, 0), n); //verify that the element at index 0 is the one just added. 
 
-		list.add(2, new Trade(null, 2));
+		list.add(2, new Trade(null, 2)); //adds a Trade at index 2.
 		n = list.get(2);
-		assertEquals("List.add(int, T) should insert the specified T at the specified index.", new Trade(null, 2), n);
+		assertEquals("List.add(int, T) should insert the specified T at the specified index.", new Trade(null, 2), n); //verifies that the element at index 2 is the one just added.
 
 		list.add(2, new Trade(null, 3));
 		assertEquals("List.add(int, T) should insert the specified T at the specified index.", new Trade(null, 3), list.get(2));
 
-		assertEquals(4, list.size());
+		assertEquals(4, list.size());//verifies that the final size of the list is 4.
 	}
 
 	@Test
@@ -231,9 +231,9 @@ public class ListGenericTest extends DSUnitTesting {
 	public void testGet() {
 		Marks.getInstance().marks.put(ID+"Get", 1f);
 
-		l = new DSEListGeneric<Trade>(chain3);
-		int s = l.size();
-		assertEquals("List.size() should be working for this test", 3, s);
+		l = new DSEListGeneric<Trade>(chain3); //initializes a 'DSEListGeneric' with 'chain3'
+		int s = l.size(); //size of the list should be 3
+		assertEquals("List.size() should be working for this test", 3, s); //verifies that size of the list is 3
 		
 		// remember 0 indexing. 
 		Trade n = l.get(4);
