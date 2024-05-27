@@ -29,6 +29,10 @@ public class ListedCompany {
 		return currentPrice;
 	}
 	
+	 public void setCurrentPrice(int newPrice) {
+	        this.currentPrice = newPrice;
+	    }
+	
 	// Constructor
 	public ListedCompany(String code, String name, int currentPrice)
 	{

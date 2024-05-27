@@ -1,6 +1,7 @@
 package unisa.dse.a2.students;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import unisa.dse.a2.interfaces.ListGeneric;
@@ -65,13 +66,14 @@ public class SecuritiesExchange {
 	 * @param company
 	 * @return True if the broker was successfully added, false otherwise
      */
-	 */
+	 
 	public boolean addBroker(StockBroker broker)
 	{
-		if (broker != null) {
-	        return brokers.add(broker);
-	    }
-	    return false;
+		if (broker != null && !brokers.contains(broker)) {
+			brokers.add(broker);
+			return true;
+        }
+		return false;
 	}
 	
 	/**
@@ -91,19 +93,19 @@ public class SecuritiesExchange {
 	 * @throws UntradedCompanyException when traded company is not listed on this exchange
 	 */
 	public int processTradeRound() throws UntradedCompanyException
-	{
-		// Initialize the count of successful trades
-	    int successfulTrades = 0;
+	{	
+	    int successfulTrades = 0; // Initialize the count of successful trades
+	    Map<String, Integer> netQuantities = new HashMap<>(); // To track net quantities traded for each company
 
 	    // Loop through each broker in the list of brokers
 	    for (StockBroker broker : brokers) {
-	        // Get the next trade from the broker's queue
-	        Trade trade = broker.getNextTrade();
-
-	        // If there is a trade to process
-	        if (trade != null) {
+	       
+	        Trade trade = broker.getNextTrade();  // Get the next trade from the broker's queue	  
+	       
+	        // if there is a trade to process
+	        if (trade != null) {  
 	            // Get the company code associated with the trade
-	            String companyCode = trade.listedCompanyCode;
+	            String companyCode = trade.getCompanyCode();
 
 	            // Check if the company code exists in the companies map
 	            if (!companies.containsKey(companyCode)) {
@@ -111,30 +113,38 @@ public class SecuritiesExchange {
 	                throw new UntradedCompanyException(companyCode);
 	            }
 
-	            // Get the ListedCompany object from the map
-	            ListedCompany company = companies.get(companyCode);
-
-	            // Get the quantity of shares to be traded
-	            int quantity = trade.getShareQuantity();
-
-	            // Get the current price of the company's shares
-	            int currentPrice = company.getCurrentPrice();
-
-	            // Calculate the total price for the quantity of shares
-	            int totalPrice = quantity * currentPrice;
+	           
+	            ListedCompany company = companies.get(companyCode);  // Get the ListedCompany object from the map	            
+	            int quantity = trade.getShareQuantity(); // Get the quantity of shares to be traded           
+	            int currentPrice = company.getCurrentPrice(); // Get the current price of the company's shares
+	      
 
 	            // Create the announcement string for the trade
-	            String announcement = "Trade: " + quantity + " " + companyCode + " @ " + currentPrice + " via " + broker.getName();
+	            String announcement = "Trade: " + quantity + " " + companyCode + " @ " + currentPrice + " via " + broker.getName();	            
+	            announcements.add(announcement); // Add the announcement to the announcements list	          
+	            successfulTrades++;  // Increment the count of successful trades
+	            
+	            // Update the net quantity for the company
+	            netQuantities.put(companyCode, netQuantities.getOrDefault(companyCode, 0) + quantity);
 
-	            // Add the announcement to the announcements list
-	            announcements.add(announcement);
+	            //trade = broker.getNextTrade(); // Get the next trade from the broker's queue
+	        }
+	        
+	    }
+	 // Update prices based on net quantities
+	    for (Map.Entry<String, Integer> entry : netQuantities.entrySet()) {
+	        ListedCompany company = companies.get(entry.getKey());
+	        int netQuantity = entry.getValue();
+	        int currentPrice = company.getCurrentPrice();
 
-	            // Increment the count of successful trades
-	            successfulTrades++;
+	        if (netQuantity > 0) {
+	            company.setCurrentPrice(currentPrice + 1); // Increase price by 1 for net positive quantity
+	        } else if (netQuantity < 0) {
+	            company.setCurrentPrice(currentPrice - 1); // Decrease price by 1 for net negative quantity
 	        }
 	    }
 	    // Return the total number of successful trades
-	    return successfulTrades;
+	    return successfulTrades; 
 	}
 	
 	/**
