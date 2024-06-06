@@ -81,7 +81,8 @@ public class SecuritiesExchangeTest extends DSUnitTesting {
 	@Test
 	public void testSecuritiesExchange_ProcessTradeRound() throws UntradedCompanyException, FileNotFoundException {
 		Marks.getInstance().marks.put(ID + "SecuritiesExchange_ProcessTradeRound", 1f);
-
+		
+		// Initial set up
 		SecuritiesExchange asx = new SecuritiesExchange("ASX");
 		ListedCompany pear = new ListedCompany("PEAR", "Pear Computer Limited", 50);
 		ListedCompany orange = new ListedCompany("ORNG", "Orange Computer Limited", 100);
@@ -92,24 +93,25 @@ public class SecuritiesExchangeTest extends DSUnitTesting {
 		asx.addBroker(alex);
 		asx.addBroker(dave);
 		
-		assertEquals("No trades should processed", 0, asx.processTradeRound());
+		assertEquals("No trades should processed", 0, asx.processTradeRound()); //process no trades
 		
-		Trade alexT1 = new Trade(alex, "PEAR", 100);
-		alex.placeOrder(alexT1);
+		//Placing trades
+		Trade alexT1 = new Trade(alex, "PEAR", 100); 
+		alex.placeOrder(alexT1); //trade id =100
 		Trade alexT2 = new Trade(alex, "ORNG", -600);
-		alex.placeOrder(alexT2);
-		Trade alexT3 = new Trade(alex, "ORNG", 200);
-		alex.placeOrder(alexT3);
+		alex.placeOrder(alexT2);  //trade id=101
+		Trade alexT3 = new Trade(alex, "ORNG", 200); 
+		alex.placeOrder(alexT3); //trade id =104
 
 		Trade daveT1 = new Trade(dave, "ORNG", 300);
-		dave.placeOrder(daveT1);
-		Trade daveT2 = new Trade(dave, "PEAR", -100);
-		dave.placeOrder(daveT2);
+		dave.placeOrder(daveT1);  //trade id =107
+		Trade daveT2 = new Trade(dave, "PEAR", -100); 
+		dave.placeOrder(daveT2); //trade id =108
 		
-		assertEquals("Two trades should processed in first round", 2, asx.processTradeRound());
+		assertEquals("Two trades should processed in first round", 2, asx.processTradeRound()); 
 		
-		assertEquals("PEAR price incorrect", 51, pear.getCurrentPrice());
-		assertEquals("ORNG price incorrect", 103, orange.getCurrentPrice());
+		assertEquals("PEAR price incorrect", 51, pear.getCurrentPrice()); 
+		assertEquals("ORNG price incorrect", 103, orange.getCurrentPrice()); 
 
 		assertEquals("Two trades should processed in second round", 2, asx.processTradeRound());
 		
